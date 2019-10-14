@@ -44,7 +44,7 @@ def save_string_to_file(text, directory, filename):
 # Definirajte funkcijo, ki prenese glavno stran in jo shrani v datoteko.
 
 
-def save_frontpage(TODO):
+def save_frontpage(page, directory, filename):
     '''Save "cats_frontpage_url" to the file
     "cat_directory"/"frontpage_filename"'''
     return TODO
@@ -56,7 +56,8 @@ def save_frontpage(TODO):
 
 def read_file_to_string(directory, filename):
     '''Return the contents of the file "directory"/"filename" as a string.'''
-    return TODO
+    with open(f'{directory}/{filename}', 'r') as f:
+        return f.read()
 
 # Definirajte funkcijo, ki sprejme niz, ki predstavlja vsebino spletne strani,
 # in ga razdeli na dele, kjer vsak del predstavlja en oglas. To storite s

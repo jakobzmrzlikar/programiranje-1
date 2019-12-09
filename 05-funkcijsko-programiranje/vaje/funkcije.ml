@@ -93,7 +93,7 @@ let rec map_tlrec f list =
 let rec mapi f list =
   let rec mapi' f list mapi_list index = 
     match list with
-    | [] -> mapi_list
+    | [] -> reverse mapi_list
     | x :: xs -> mapi' f xs (f x index :: mapi_list) (index + 1)
   in mapi' f list [] 0
 

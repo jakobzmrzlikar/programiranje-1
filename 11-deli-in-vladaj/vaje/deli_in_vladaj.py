@@ -7,6 +7,7 @@
 #
 # [10, 4, 5, 15, 11, 2, 17, 0, 18]
 #
+#
 # preuredimo v
 #
 # [0, 2, 5, 4, 10, 11, 17, 15, 18]
@@ -28,6 +29,21 @@
 ###############################################################################
 
 
+import random
+
+
+def pivot(a, start, end):
+    if start >= end:
+        return start
+    pivot = start
+    bigger = pivot + 1
+    for i in range(pivot, end + 1):
+        if a[i] < a[pivot]:
+            a[i], a[bigger] = a[bigger], a[i]
+            bigger += 1
+    a[pivot], a[bigger - 1] = a[bigger - 1], a[pivot]
+    return bigger - 1
+
 
 ###############################################################################
 # V tabeli želimo poiskati vrednost k-tega elementa po velikosti.
@@ -45,6 +61,13 @@
 ###############################################################################
 
 
+def kth_element(a, k):
+    for i in range(len(a) - 1):
+        tmp = a
+        if pivot(tmp, i, len(a) - 1) == k:
+            return a[i]
+    return a[-1]
+
 
 ###############################################################################
 # Tabelo a želimo urediti z algoritmom hitrega urejanja (quicksort).
@@ -61,21 +84,42 @@
 ###############################################################################
 
 
+def quicksort_part(a, start, end):
+    if start >= end:
+        return a
+    idx = pivot(a, start, end)
+    quicksort_part(a, start, idx - 1)
+    quicksort_part(a, idx + 1, end)
+
+
+def quicksort(a):
+    quicksort_part(a, 0, len(a) - 1)
+
+
+def tester(f):
+    for i in range(1000):
+        foo = [random.randrange(-10000, 10000, 1) for _ in range(100)]
+        bar = sorted(foo)
+        f(foo)
+        if bar != foo:
+            return False
+    return True
+
 
 ###############################################################################
 # Če imamo dve urejeni tabeli, potem urejeno združeno tabelo dobimo tako, da
 # urejeni tabeli zlijemo. Pri zlivanju vsakič vzamemo manjšega od začetnih
 # elementov obeh tabel. Zaradi učinkovitosti ne ustvarjamo nove tabele, ampak
 # rezultat zapisujemo v že pripravljeno tabelo (ustrezne dolžine).
-# 
+#
 # Funkcija naj deluje v času O(n), kjer je n dolžina tarčne tabele.
-# 
-# Sestavite funkcijo [zlij(target, begin, end, list_1, list_2)], ki v del 
-# tabele [target] med start in end zlije tabeli [list_1] in [list_2]. V primeru, 
+#
+# Sestavite funkcijo [zlij(target, begin, end, list_1, list_2)], ki v del
+# tabele [target] med start in end zlije tabeli [list_1] in [list_2]. V primeru,
 # da sta elementa v obeh tabelah enaka, naj bo prvi element iz prve tabele.
-# 
+#
 # Primer:
-#  
+#
 #     >>> list_1 = [1,3,5,7,10]
 #     >>> list_2 = [1,2,3,4,5,6,7]
 #     >>> target = [-1 for _ in range(len(list_1) + len(list_2))]
@@ -86,16 +130,30 @@
 ###############################################################################
 
 
+def zlij(target, begin, end, list1, list2):
+    i, j = 0, 0
+    for k in range(begin, end):
+        if list1[i] <= list2[j]:
+            target[k] = list1[i]
+            i += 1
+            if i >= len(list1):
+                target[k:end] = list2[:]
+        else:
+            target[k] = list2[j]
+            j += 1
+            if j >= len(list2):
+                target[k:end] = list1[:]
+
 
 ###############################################################################
-# Tabelo želimo urediti z zlivanjem (merge sort). 
+# Tabelo želimo urediti z zlivanjem (merge sort).
 # Tabelo razdelimo na polovici, ju rekurzivno uredimo in nato zlijemo z uporabo
 # funkcije [zlij].
 #
 # Namig: prazna tabela in tabela z enim samim elementom sta vedno urejeni.
 #
 # Napišite funkcijo [mergesort(a)], ki uredi tabelo [a] s pomočjo zlivanja.
-# Za razliko od hitrega urejanja tu tabele lahko kopirate, zlivanje pa je 
+# Za razliko od hitrega urejanja tu tabele lahko kopirate, zlivanje pa je
 # potrebno narediti na mestu.
 #
 # >>> a = [10, 4, 5, 15, 11, 3, 17, 2, 18]
